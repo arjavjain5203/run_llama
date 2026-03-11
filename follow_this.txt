@@ -1,0 +1,98 @@
+Step 1 — Install Python 3.10+ (if not already installed)
+
+Download from python.org
+
+Make sure to check “Add Python to PATH” during installation.
+
+✅ Verify installation:
+
+python --version
+pip --version
+Step 2 — Install required Python packages
+
+Open PowerShell and run:
+
+pip install fastapi uvicorn psutil
+
+fastapi → API server for LLM
+
+uvicorn → FastAPI server runner
+
+psutil → Detects RAM and system info
+
+Step 3 — Update Paths in PowerShell Script
+
+Open ollama-public.ps1 in a text editor and check:
+
+$OllamaScript = "C:\Users\Mukesh\Documents\run_ollama.py"
+
+Make sure this path matches exactly where you saved run_ollama.py.
+
+Optional: you can also change the ngrok folder:
+
+$NgrokFolder = "C:\Tools\ngrok"
+Step 4 — Set PowerShell Execution Policy
+
+This allows running scripts:
+
+Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
+
+If prompted, choose Yes.
+
+Step 5 — Run the Automation Script
+
+Open PowerShell in the folder containing ollama-public.ps1:
+
+.\ollama-public.ps1
+
+What happens now:
+
+ngrok is downloaded automatically if missing.
+
+Ollama LLM starts via Python (run_ollama.py).
+
+ngrok tunnel starts and outputs a public endpoint URL.
+
+DuckDNS update prints a message (for free ngrok, the URL is dynamic).
+
+The script continuously monitors Ollama and ngrok, restarting if needed.
+
+Step 6 — Test the Endpoint
+
+Copy the URL printed in the console, for example:
+
+https://abcd1234.ngrok.io
+
+Test the LLM API:
+
+POST https://abcd1234.ngrok.io/v1/query
+Content-Type: application/json
+
+{
+  "prompt": "Hello, LLM!",
+  "max_tokens": 128
+}
+
+You should get a JSON response from your Ollama model.
+
+Step 7 — Optional: Run on Startup
+
+Open Task Scheduler → Create Task →
+
+Trigger: At logon
+
+Action: powershell.exe
+
+Arguments: -WindowStyle Hidden -File "C:\path\to\ollama-public.ps1"
+
+This will ensure your LLM API is always live when the machine starts.
+
+Step 8 — Monitor
+
+Check PowerShell logs or console output for:
+
+ngrok URL changes
+
+Ollama errors (model not found, RAM issues)
+
+ngrok crashes (rare, auto-restarts in script)
